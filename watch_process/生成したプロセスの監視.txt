@@ -1,13 +1,21 @@
-Public Sub hoge_001(CommandForVBS000)
-'実行呼び出し
-Debuf.Print CommandForVBS000
+Public Sub hoge_001(Command000)
+
 Dim ProcessID001 As Long
-ProcessID001 = Shell("WScript.exe """ & CommandForVBS000 &""")
+ProcessID001 = Shell("WScript.exe """ & Command000 &""")
 
-'プロセスハンドルの取得
-Dim HandleProcess001 = OpenProcess(PROCESS_QUERY_INFORMATION, 1, ProcessID001)
+Dim HandleProcess001 As Long
+HandleProcess001 = OpenProcess(PROCESS_QUERY_INFORMATION, 1, ProcessID001)
 
-'終了ステータス(Exitcode001)の監視
-'対象プログラムが実行中のとき、終了ステータスはSTILL_ACTIVE(&H103)
 Dim Exitcode001 As Long
 Dim Return001 As Long
+Do
+	DoEvents
+	Return001 = GetExitCodeProcess(HandleProcess001, Exitcode001)
+
+	If Return001 = 0 Then
+		CloseHandleProcess001
+		Exit Sub
+	End Sub
+Loop While(Exitcode001 = STILL_ACTIVE)
+
+End Sub
